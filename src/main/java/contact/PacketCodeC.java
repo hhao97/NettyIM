@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PacketCodeC {
+    public static final PacketCodeC INSTANCE = new PacketCodeC();
     private static final int MAGIC_NUMBER = 0x12345678;
     private static final Map<Byte, Class<? extends Packet>> packetTypeMap;
     private static final Map<Byte, Serializer> serializerMap;
@@ -19,10 +20,11 @@ public class PacketCodeC {
         Serializer serializer = new JSONSerializer();
         serializerMap.put(serializer.getSerializerAlgorithm(), serializer);
     }
-    public ByteBuf encode(Packet packet) {
+
+    public ByteBuf encode(ByteBufAllocator byteBufAllocator, Packet packet) {
         // 1. 创建 ByteBuf 对象
-        ByteBuf byteBuf = ByteBufAllocator.DEFAULT.ioBuffer();
-        // 2. 序列化 Java 对象
+        ByteBuf byteBuf = byteBufAllocator.ioBuffer();
+        // 2. 序列化 java 对象
         byte[] bytes = Serializer.DEFAULT.serialize(packet);
 
         // 3. 实际编码过程
@@ -35,6 +37,7 @@ public class PacketCodeC {
 
         return byteBuf;
     }
+
     public Packet decode(ByteBuf byteBuf) {
         // 跳过 magic number
         byteBuf.skipBytes(4);
@@ -63,10 +66,12 @@ public class PacketCodeC {
 
         return null;
     }
+
     private Serializer getSerializer(byte serializeAlgorithm) {
 
         return serializerMap.get(serializeAlgorithm);
     }
+
     private Class<? extends Packet> getRequestType(byte command) {
 
         return packetTypeMap.get(command);

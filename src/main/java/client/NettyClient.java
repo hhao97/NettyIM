@@ -31,7 +31,8 @@ public class NettyClient {
                     @Override
                     protected void initChannel(SocketChannel ch) throws Exception {
                         System.out.println("客户端启动...");
-                        ch.pipeline().addLast(new FirstClientHandler());
+//                        ch.pipeline().addLast(new FirstClientHandler());
+                        ch.pipeline().addLast(new ClientHandler());
                     }
                 });
         connectServer("127.0.0.1", 9500, bootstrap, MAX_RETRY);

@@ -39,7 +39,8 @@ public class NettyServer {
                 .childHandler(new ChannelInitializer<NioSocketChannel>() {
                     protected void initChannel(NioSocketChannel ch) {
                         System.out.println("有新的连接接入 远程ip"+ch.remoteAddress()+"本地ip"+ch.localAddress());
-                        ch.pipeline().addLast(new FirstServerHandler());
+//                        ch.pipeline().addLast(new FirstServerHandler());
+                        ch.pipeline().addLast(new ServerHandler());
                     }
                 });
         bindPort(serverBootstrap);
